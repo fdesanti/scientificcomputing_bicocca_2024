@@ -5,7 +5,7 @@ Code implementation for the exercise Q11 - Rock Paper Scissors Game
 
 import random
 
-class RockPaperScissorgame:
+class RockPaperScissorGame:
     """
         Remember the rules:
          - Rock beats scissors
@@ -122,7 +122,7 @@ class RockPaperScissorgame:
         
 
 if __name__ == "__main__":
-    game = RockPaperScissorgame()
+    game = RockPaperScissorGame()
     plays = game.play()
 
     
