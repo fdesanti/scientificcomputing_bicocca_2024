@@ -9,11 +9,10 @@ class RockPaperScissorGame:
     """
         Remember the rules:
          - Rock beats scissors
-         - Scissors beats paper
+         - Scissors beat paper
          - Paper beats rock
     """
     def __init__(self):
-
         #wins counter
         self._wins = {"User"    : 0, 
                       "Computer": 0}
