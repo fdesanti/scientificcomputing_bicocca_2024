@@ -34,7 +34,7 @@ class GameofLife:
         #assign properties
         self.N = N
         self.M = M if M is not None else N
-        assert ((N>5) and (M>5)), "Do you really want to play this game with such small grid?! Come on..."
+        assert ((self.N>5) and (self.M>5)), "Do you really want to play this game with such small grid?! Come on..."
 
         #define a pad mode dict to match the input options of numpy.pad
         self._pad_mode = {"wall": "constant", "pacman": "wrap"}
@@ -83,6 +83,7 @@ class GameofLife:
             -----
                 grid   (numpy.ndarray) : The input grid of shape (N, M)
                 kernel (numpy.ndarray) : The kernel of shape (K, L) to be convolved with the grid
+                pad_mode (str)         : The pad mode to be used depending on the boundary specified
 
             Returns:
             --------
