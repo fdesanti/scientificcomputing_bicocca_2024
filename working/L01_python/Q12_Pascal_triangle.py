@@ -36,6 +36,7 @@ def print_pascal(n):
         prev_output.append(L)
         return L, prev_output
     
+    #compute the list containing the Pascal's rows
     _, output = pascal(n)
     
     # Calculate the maximum width for formatting
