@@ -7,37 +7,62 @@ import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 class GameofLife:
     """"
+        Implementation of the Conway's Game of Life. 
+        This Game is based on simple rules. 
+        Consider a NxM grid initialized with some alive cells. 
+        
+        Then:
+            Every alive cells with >=3 alive neighbour cells dies for overpopulation
+            Every alive cells with  <2 alive neighbour cells dies for underpopulation
+            Every dead cell   with ==3 alive neighbour cells comes to life
+        
+        The system is then let evolve by itself.
+
         Args:
         -----
-            N (int): the size of the grid (NxN)
-    """
+            N (int):  first dimension of the grid (NxM)
+            M (int): second dimension of the grid (NxM). Optional: if None then M=N. (Default. None)
+            boundary (str): the boundary condition to consider. 
+                            If "wall"   then grid edges are not connected to eachother (i.e. objects exit the grid)
+                            If "pacman" then grid edges are wrapped like a torus (i.e. like in the PacMan Game)
+                            (Default: "wall")
+    """ 
 
-    def __init__(self, N=10, M=None, boundary='wall'):
-
+    def __init__(self, N, M=None, boundary='wall'):
+        #assign properties
         self.N = N
+        self.M = M if M is not None else N
+        assert ((N>5) and (M>5)), "Do you really want to play this game with such small grid?! Come on..."
 
+        #define a pad mode dict to match the input options of numpy.pad
         self._pad_mode = {"wall": "constant", "pacman": "wrap"}
-        self.boundary = boundary
-        assert boundary in self._pad_mode.keys(),f"Invalid boundary condition. You can choose from {self._pad_mode.keys()}"
+        self.boundary  = boundary
+        assert boundary in self._pad_mode.keys(),f"Invalid boundary condition. You can choose from {list(self._pad_mode.keys())}"
 
 
     def _initialize_grid(self):
+        """
+            Randomly initialize the NxM Grid.
+        """
+        #create an initial grid with all dead cells
+        self.grid  = np.zeros((self.N, self.M))
 
-        self.grid  = np.zeros((N, N))
-
+        #these are just dummy ij indexes of the grid
         i = np.arange(self.N)
+        j = np.arange(self.M)
 
-        Nmax = np.random.choice(np.arange(self.N**2))
-        ixs = np.random.choice(i, Nmax, replace=True)
-        jxs = np.random.choice(i, Nmax, replace=True)
-        self.grid[ixs, jxs] = 1.0
-
-        return self.grid
+        #Randomly choose the number of alive cells
+        Nalive = np.random.randint(1, self.N*self.M + 1)
         
-    
+        #Randomly pick coordinates for those cells
+        ixs = np.random.choice(i, Nalive, replace=True)
+        jxs = np.random.choice(j, Nalive, replace=True)
+        
+        #change the grid in those position 
+        self.grid[ixs, jxs] = 1.0
+        return self.grid
 
     @staticmethod
     def conv2d(grid, kernel, pad_mode):
@@ -56,7 +81,7 @@ class GameofLife:
 
             Args:
             -----
-                grid (numpy.ndarray)   : The input grid of shape (N, M)
+                grid   (numpy.ndarray) : The input grid of shape (N, M)
                 kernel (numpy.ndarray) : The kernel of shape (K, L) to be convolved with the grid
 
             Returns:
@@ -74,8 +99,6 @@ class GameofLife:
         
         return convolved
 
-
-
     def count_neighbours(self):
         """
             Counts the alive neighbours of each cell. 
@@ -83,17 +106,17 @@ class GameofLife:
             K = [[1, 1, 1], 
                  [1, 0, 1], 
                  [1, 1, 1]]
+            As we want to count the 8 neighbours of each cell.
             
             This function accounts for the boundary condition specified in the constructor
         """
-
+        #define the kernel
         kernel = np.array([[1, 1, 1], 
                            [1, 0, 1], 
                            [1, 1, 1]])
 
         return self.conv2d(self.grid, kernel, pad_mode=self._pad_mode[self.boundary])
         
-    
     def evolve(self):
         """
             Computes the evolutionary step in the Game of Life. 
@@ -117,13 +140,11 @@ class GameofLife:
         
         return grid
         
-
     def play(self):
         """
             Main function that evolves the cell grid and plots the animated result. 
             We use a while loop which is interrupted if the Game reaches a stationary state
         """
-
         #the current grid is the initialized one
         prev_grid = self._initialize_grid()
         
@@ -150,14 +171,14 @@ class GameofLife:
             else:
                 prev_grid = new_grid
                 self.grid = new_grid.copy()
-            
-            #time.sleep(0.1)
+
 
 
 if __name__=='__main__':
 
     pars = argparse.ArgumentParser()
-    pars.add_argument("--N", type=int, default=10, help="Size of the grid NxN. (Default: 10)")
+    pars.add_argument("--N", type=int, default=10, help="Size of the grid NxM. (Default: 10)")
+    pars.add_argument("--M", default=None, help="Size of the grid NxM. If None then M=N. (Default: None)")
     pars.add_argument("--boundary", type=str, default="wall", help="Boundary condition. (Default: wall)")
     pars.add_argument("--seed", default=None, help="Random seed for reproducibility. (Default: None)")
     
@@ -169,8 +190,9 @@ if __name__=='__main__':
         np.random.seed(seed)
     
     N        = args.N
+    M        = int(args.M) if args.M is not None else args.M
     boundary = args.boundary
 
-
-    Game = GameofLife(N=N, boundary=boundary)
+    #setup the game instance and play
+    Game = GameofLife(N=N, M=M, boundary=boundary)
     Game.play()
