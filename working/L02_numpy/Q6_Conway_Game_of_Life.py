@@ -93,10 +93,10 @@ class GameofLife:
         padded = np.pad(grid, 1, mode=pad_mode)
 
         #create the sliding windows
-        slidinng_windows = np.lib.stride_tricks.sliding_window_view(padded, kernel.shape)
+        sliding_windows = np.lib.stride_tricks.sliding_window_view(padded, kernel.shape)
         
         #compute the convolution
-        convolved = np.sum(slidinng_windows*kernel, axis=(2, 3))
+        convolved = np.sum(sliding_windows*kernel, axis=(2, 3))
         
         return convolved
 
