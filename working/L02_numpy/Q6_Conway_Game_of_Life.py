@@ -49,19 +49,15 @@ class GameofLife:
         #create an initial grid with all dead cells
         self.grid  = np.zeros((self.N, self.M))
 
-        #these are just dummy ij indexes of the grid
-        i = np.arange(self.N)
-        j = np.arange(self.M)
-
-        #Randomly choose the number of alive cells
+        #Randomly choose the number of alive cells (from 1 to NxM)
         Nalive = np.random.randint(1, self.N*self.M + 1)
         
         #Randomly pick coordinates for those cells
-        ixs = np.random.choice(i, Nalive, replace=True)
-        jxs = np.random.choice(j, Nalive, replace=True)
+        indices = np.random.choice(self.N * self.M, Nalive, replace=False)
+        i, j    = np.unravel_index(indices, (self.N, self.M))
         
         #change the grid in those position 
-        self.grid[ixs, jxs] = 1.0
+        self.grid[i, j] = 1.0
         return self.grid
 
     @staticmethod
