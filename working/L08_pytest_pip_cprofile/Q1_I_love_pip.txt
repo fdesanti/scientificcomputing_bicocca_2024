@@ -1,0 +1,5 @@
+For this exercise I turned the Game Of Life implementation from Lecture 02 into a module.
+
+The code is available @ https://github.com/fdesanti/GameOfLife and on TestPyPi @ https://test.pypi.org/project/game-of-life/
+
+And can be installed via pip:  pip install -i https://test.pypi.org/simple/ game-of-life
