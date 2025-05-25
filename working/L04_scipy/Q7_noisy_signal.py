@@ -18,7 +18,7 @@ def fdata(x, L):
 if __name__=="__main__":
 
     pars = argparse.ArgumentParser()
-    pars.add_argument("--std", type=float, default=30, help="Standard Deviation of the gaussian smoothing filter")
+    pars.add_argument("--std", type=float, default=1, help="Standard Deviation of the gaussian smoothing filter")
 
     args = pars.parse_args()
     std  = args.std
@@ -43,9 +43,9 @@ if __name__=="__main__":
                          'font.family': "Computer Modern"})
 
     fig, ax = plt.subplots()
-    ax.plot(x, noisy, alpha = 0.5, label="$f(x) + n$")
+    ax.plot(x, noisy, alpha = 0.3, label="$f(x) + n$")
     ax.plot(x, original, label="$f(x)$")
-    ax.plot(x, conv, label="smoothed")
+    ax.plot(x, conv, '--', label="smoothed")
     ax.set_xlabel("$x$")
     ax.set_ylabel("$y$")
     plt.title("Convolution with Gaussian smoothing window")
