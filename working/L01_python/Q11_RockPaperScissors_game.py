@@ -5,10 +5,21 @@ import random
 
 class RockPaperScissorGame:
     """
-        Remember the rules:
-         - Rock beats scissors
-         - Scissors beat paper
-         - Paper beats rock
+    Rock Paper Scissors Game class.
+    This class implements a simple game of Rock Paper Scissors.
+    The user can choose between the classic version (rock, paper, scissors) or the TBBT version (rock, paper, scissors, lizard, spock).
+    
+    Remember the rules (classic version):
+        - Rock beats scissors
+        - Scissors beat paper
+        - Paper beats rock
+    
+    The rules for the TBBT version are:
+        - Rock beats scissors and lizard
+        - Scissors beat paper and lizard
+        - Paper beats rock and spock
+        - Lizard beats spock and paper
+        - Spock beats scissors and rock
     """
     def __init__(self, mode='classic'):
 
