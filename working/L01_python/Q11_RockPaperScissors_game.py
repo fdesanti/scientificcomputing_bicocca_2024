@@ -1,8 +1,6 @@
 """
 Code implementation for the exercise Q11 - Rock Paper Scissors Game
 """
-#TODO - The full Rock Paper Scissor Lizard Spock game from TBBT
-
 import random
 
 class RockPaperScissorGame:
@@ -12,7 +10,9 @@ class RockPaperScissorGame:
          - Scissors beat paper
          - Paper beats rock
     """
-    def __init__(self):
+    def __init__(self, mode='classic'):
+
+        assert mode in ['classic', 'TBBT'], "Mode must be either 'classic' or 'TBBT' (The Big Bang Theory version)"
         #wins counter
         self._wins = {"User"    : 0, 
                       "Computer": 0}
@@ -20,10 +20,27 @@ class RockPaperScissorGame:
         self._plays   = 0
 
         #possible choices
-        self._choices = ["rock", "paper", "scissors"]
+        if mode == 'classic':
+            self._choices = ["rock", "paper", "scissors"]
+            self._approx={'r': 'rock',
+                          'p': 'paper',
+                          's': 'scissors'}
+        
+        elif mode == 'TBBT':
+            self._choices = ["rock", "paper", "scissors", "lizard", "spock"]
+            self._approx={'r' : 'rock',
+                          'p' : 'paper',
+                          's' : 'scissors',
+                          'l' : 'lizard',
+                          'sp': 'spock'}
         
         #dictionary saying what each choice beats    
-        self._beats = {"rock": "scissors", "scissors": "paper", "paper": "rock"}
+        self._beats = {"rock"    : ["scissors", "lizard"], 
+                       "scissors": ["paper", "lizard"],
+                       "paper"   : ["rock", "spock"],
+                       "lizard"  : ["spock", "paper"],
+                       "spock"   : ["scissors", "rock"]}
+        
 
     @property
     def wins(self):
@@ -33,17 +50,25 @@ class RockPaperScissorGame:
     def total_plays(self):
         return self._plays
     
+    @property
+    def available_choices(self):
+        """
+            Returns a string with the available choices for the user to choose from
+            Example: "rock, paper, scissors" or "rock, paper, scissors, lizard, spock"
+        """
+        return [c+'/'+self._approx[c] for c in self._approx.keys()]
+    
     def _format_choice(self, choice):
         """
             Format the user's input choice to be a valid choice. 
             Example: if the user types 'r', it will be converted to 'rock'
         """
-        if choice in self._choices:
+        if choice in self._approx.keys():
+            return self._approx[choice]
+        elif choice in self._choices:
             return choice
-        elif choice in [c[0] for c in self._choices]:
-            return [c for c in self._choices if c[0] == choice][0]
         else:
-            raise ValueError(f"invalid choice: available are {[s[0]+'/'+str(s) for s in self._choices]}")
+            raise ValueError(f"invalid choice: available are {self.available_choices}")
     
     def _who_wins(self, user_choice, computer_choice):
         """ 
@@ -62,11 +87,11 @@ class RockPaperScissorGame:
         """
         #determine what the user's choice beats
         user_beats = self._beats[user_choice]
-
+        print(f"User choice: {user_choice}, Computer choice: {computer_choice}")
         if user_choice == computer_choice:
             print("Tie")
             return "Tie"
-        if user_beats == computer_choice:
+        if any([computer_choice == c for c in user_beats]):
             print("Congratulations, you win! ;)")
             return "User"
         else:
@@ -75,7 +100,9 @@ class RockPaperScissorGame:
 
     def _get_user_choice(self):
         """ get the user's choice from command line """
-        choice = input(f"Please choose among {[s[0]+'/'+str(s) for s in self._choices]}")  
+        #choice = input(f"Please choose among {[s[0]+'/'+str(s) for s in self._choices]}")  
+        msg = f"\nPlease choose among {self.available_choices}:"
+        choice = input(msg).lower()
         return self._format_choice(choice)
     
     def _get_computer_choice(self):
@@ -121,7 +148,7 @@ class RockPaperScissorGame:
         
 
 if __name__ == "__main__":
-    game = RockPaperScissorGame()
+    game = RockPaperScissorGame(mode='TBBT')
     plays = game.play()
 
     
