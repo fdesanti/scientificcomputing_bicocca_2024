@@ -80,9 +80,11 @@ def optimal_snr(td_template, psd, sampling_frequency):
 if __name__=="__main__":    
 
     # set seed
+    import random
+    random.seed(42)
     np.random.seed(42)
 
-    N = 50
+    N = 10
     M = np.random.uniform(100, 1000, N)
     q = np.random.uniform(0.125, 1, N)
     ra  = np.random.uniform(0, 2*np.pi, N)
@@ -101,17 +103,17 @@ if __name__=="__main__":
     noise = pycbc.noise.noise_from_psd(tsamples, delta_t, psd, seed=42)
 
     run_times = []
-    cpus_test = range(1, mp.cpu_count()+5)
+    cpus_test = range(1, mp.cpu_count()+9)
     for cpus in tqdm(cpus_test):
         print(f"Running with {cpus} CPUs")
-        
+        mp.set_start_method('fork', force=True)
+        start = time()
 
         with mp.Pool(processes=cpus) as pool:
-            start = time()
-            results = list(pool.imap(lambda x: run(x[0], x[1], x[2], x[3], x[4], x[5]), 
+            results = list(pool.imap_unordered(lambda x: run(x[0], x[1], x[2], x[3], x[4], x[5]), 
                                         zip(M, q, ra, dec, pol, psd)))
-            end = time()
-            run_times.append(end - start)
+        end = time()
+        run_times.append(end - start)
         
     plt.figure()
     plt.plot(cpus_test, run_times, marker='o')
