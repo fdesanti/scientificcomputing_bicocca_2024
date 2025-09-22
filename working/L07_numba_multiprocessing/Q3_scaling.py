@@ -120,6 +120,6 @@ if __name__=="__main__":
     plt.xlabel("Number of CPUs")
     plt.ylabel("Run time [s]")
     plt.axvline(os.cpu_count(), color='k', ls='--', label='Number of physical cores')
-    plt.title("Scaling of waveform generation with number of CPUs")
+    plt.title("Scaling of SNR computation with number of CPUs")
     plt.legend()
     plt.savefig("scaling.png", dpi=200, bbox_inches='tight')
