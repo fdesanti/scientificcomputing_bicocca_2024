@@ -1,0 +1,7 @@
+In this exercise I implemented a pseudo "match filtering" search, by computing the Optimal SNR 
+of a set of CBCs. 
+I parallelized with multiprocessing the generation of the waeveforms, fft and SNR computation.
+We notice how the speedup scales almost linearly for n_cpus<=4 where we have the minimum runtime. 
+After that the runtime remains stable and does not scale anymore, meaning that the overhead induced 
+by the presence of additional workers is balanced with the computational gain from parallelization, 
+therefore adding more CPUs no longer provides a net speedup.
